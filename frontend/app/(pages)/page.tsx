@@ -1,12 +1,10 @@
-// app/(pages)/page.tsx - AGORA É A PÁGINA DE LOGIN
+// app/(pages)/page.tsx
 'use client';
 
 import { Input, Button, Card, CardHeader, CardBody } from "@nextui-org/react";
-import { useState, useEffect } from "react"; // Adicionado useEffect
-import { useRouter, usePathname } from 'next/navigation'; // Adicionado usePathname
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from 'next/navigation';
 
-// Metadata para a página de login (raiz) pode ser definida no layout.tsx
-// ou aqui se preferir, mas para Client Components, o <title> é mais direto.
 
 export default function LoginPageAsRoot() {
   const [email, setEmail] = useState('');
@@ -14,15 +12,14 @@ export default function LoginPageAsRoot() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const router = useRouter();
-  const pathname = usePathname(); // Para verificar a rota atual
+  const pathname = usePathname();
 
-  // Simulação de "verificar se já está logado" (muito simples para este exemplo)
-  // Em um app real, você usaria Context API, Zustand, Redux, etc. e tokens.
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const isLoggedIn = sessionStorage.getItem('simulatedLogin');
-      if (isLoggedIn && pathname === '/') { // Se logado e tentando acessar a raiz (login)
-        router.replace('/filmes'); // Redireciona para filmes
+      if (isLoggedIn && pathname === '/') {
+        router.replace('/filmes');
       }
     }
   }, [router, pathname]);
@@ -38,10 +35,10 @@ export default function LoginPageAsRoot() {
     if (email === "admin@gmail.com" && password === "admin12-") {
       setMessage("Login simulado com sucesso! Redirecionando para filmes...");
       if (typeof window !== 'undefined') {
-        sessionStorage.setItem('simulatedLogin', 'true'); // Marca como "logado"
+        sessionStorage.setItem('simulatedLogin', 'true');
       }
       setTimeout(() => {
-        router.push('/filmes'); // Redireciona para a página de filmes
+        router.push('/filmes');
       }, 1500);
     } else {
       setMessage("Email ou senha inválidos (simulação).");
@@ -54,7 +51,7 @@ export default function LoginPageAsRoot() {
 
   return (
     <>
-      <title>Login | Cineverse Catalog</title> {/* Título da aba */}
+      <title>Login | Cineverse Catalog</title>
 
       <div className="flex justify-center items-center min-h-[calc(100vh-250px)]">
         <Card className="w-full max-w-md p-6">

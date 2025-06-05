@@ -40,7 +40,6 @@ export default function RootLayout({
 
   const menuItems = [
     { label: "Catálogo", href: "/filmes", show: (isClientMounted && isLoggedIn) },
-    // Adicione outros itens de menu aqui, controlando a visibilidade com `show`
   ];
 
   return (
@@ -113,7 +112,7 @@ export default function RootLayout({
                   </NavbarMenuItem>
                 )
               ))}
-              {(isClientMounted && !isLoggedIn) && ( // Botão de Login no menu mobile se não logado
+              {(isClientMounted && !isLoggedIn) && (
                 <NavbarMenuItem>
                    <Button 
                       as={NextUILink} 

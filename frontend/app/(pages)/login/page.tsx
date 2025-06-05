@@ -1,46 +1,40 @@
-// Marcar como Client Component para interatividade (mesmo que simulada)
+// frontend\app\(pages)\login\page.tsx
 'use client';
 
 import { Input, Button, Card, CardHeader, CardBody } from "@nextui-org/react";
 import { useState } from "react";
-import { useRouter } from 'next/navigation'; // 1. Importe o useRouter
+import { useRouter } from 'next/navigation';
 
-// Metadata e comentários sobre ela permanecem os mesmos...
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const router = useRouter(); // 2. Inicialize o router
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
 
-    // Simulação de chamada de API
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Diminuí um pouco o delay para o teste
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    if (email === "admin@gmail.com" && password === "admin12-") { // Suas credenciais de teste
+    if (email === "admin@gmail.com" && password === "admin12-") {
       setMessage("Login simulado com sucesso! Redirecionando...");
       
-      // 3. Redirecionar após um pequeno delay para o usuário ver a mensagem
       setTimeout(() => {
-        router.push('/'); // Redireciona para a página inicial (que lista os filmes)
-      }, 1500); // Espera 1.5 segundos antes de redirecionar
+        router.push('/');
+      }, 1500);
 
     } else {
       setMessage("Email ou senha inválidos (simulação).");
-      setIsLoading(false); // Certifique-se de parar o loading em caso de falha
+      setIsLoading(false);
     }
-    // Não defina setIsLoading(false) aqui se o redirecionamento for ocorrer,
-    // pois a página será desmontada. Apenas se o login falhar.
   };
 
   return (
     <>
-      {/* Hack para definir o título da página em Client Component usando App Router */}
       <title>Login | Cineverse Catalog</title>
 
       <div className="flex justify-center items-center min-h-[calc(100vh-250px)]">
@@ -60,7 +54,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 variant="bordered"
                 fullWidth
-                isDisabled={isLoading && message.includes("sucesso")} // Desabilita input após sucesso
+                isDisabled={isLoading && message.includes("sucesso")}
               />
               <Input
                 isRequired
@@ -71,7 +65,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 variant="bordered"
                 fullWidth
-                isDisabled={isLoading && message.includes("sucesso")} // Desabilita input após sucesso
+                isDisabled={isLoading && message.includes("sucesso")}
               />
               <Button
                 type="submit"
@@ -79,7 +73,7 @@ export default function LoginPage() {
                 isLoading={isLoading}
                 fullWidth
                 size="lg"
-                isDisabled={isLoading && message.includes("sucesso")} // Desabilita botão após sucesso
+                isDisabled={isLoading && message.includes("sucesso")}
               >
                 {isLoading ? (message.includes("sucesso") ? "Redirecionando..." : "Entrando...") : "Entrar"}
               </Button>

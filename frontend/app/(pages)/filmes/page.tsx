@@ -38,9 +38,9 @@ export default async function FilmesListPage() {
             shadow="md"
             key={movie.id} 
             isPressable 
-            as={NextUILink} // O Card inteiro é um link
+            as={NextUILink}
             href={`/filmes/${movie.id}`}
-            className="hover:scale-105 transition-transform duration-200 ease-in-out group" // Adicionado 'group' para hover no título
+            className="hover:scale-105 transition-transform duration-200 ease-in-out group"
           >
             <CardHeader className="flex-col items-start px-4 pt-3 pb-1">
               <Chip size="sm" color="secondary" variant="flat" className="mb-1 self-start">FILME</Chip>
@@ -60,15 +60,12 @@ export default async function FilmesListPage() {
               <p className="text-sm text-foreground-600 line-clamp-3">
                 {movie.body}
               </p>
-              {/* Botão apenas visual, já que o card é o link.
-                  Adicionado 'pointer-events-none' para garantir que não capture cliques
-                  que deveriam ir para o link do Card.
-              */}
+              
               <Button 
                 color="primary" 
                 size="sm" 
                 variant="flat" 
-                className="pointer-events-none mt-auto" // mt-auto para tentar alinhar ao final se houver espaço
+                className="pointer-events-none mt-auto"
               >
                 Ver Detalhes
               </Button>
