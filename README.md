@@ -53,5 +53,5 @@ A aplicação demonstra conceitos modernos de desenvolvimento frontend, incluind
     Acesse [http://localhost:3000](http://localhost:3000) para ver a aplicação em execução.
 
 ## Links
-- **Deploy na Vercel:** 
-- **Repositório GitHub:** 
+- **Deploy na Vercel:** [https://cineverse-catalog-6cpo4ewgl-jpjunior11s-projects.vercel.app](https://cineverse-catalog-6cpo4ewgl-jpjunior11s-projects.vercel.app)
+- **Repositório GitHub:** [https://github.com/jpjunior11/cineverse-catalog](https://github.com/jpjunior11/cineverse-catalog)
