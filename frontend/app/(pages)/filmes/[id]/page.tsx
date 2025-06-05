@@ -32,7 +32,6 @@ async function getMovie(id: string): Promise<MoviePost> {
 
 export async function generateMetadata(
   { params }: GenerateMetadataProps,
-  parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { id } = await params;
   try {
