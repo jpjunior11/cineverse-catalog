@@ -1,6 +1,6 @@
 // frontend\app\(pages)\filmes\[id]\page.tsx
 import { Card, Chip, Button, Divider } from "@nextui-org/react";
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import ImageWithFallback from "./ImageWithFallback";
 
@@ -54,7 +54,7 @@ export default async function MovieDetailPage({ params }: PageProps) {
 
   return (
     <>
-    <title>Cineverse Catalog</title>
+      <title>Cineverse Catalog</title>
 
       <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
         <Button
@@ -108,6 +108,6 @@ export default async function MovieDetailPage({ params }: PageProps) {
           </div>
         </Card>
       </div>
-    </> 
+    </>
   );
 }
