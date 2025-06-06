@@ -25,7 +25,7 @@ export default function FilmesListPage() {
       setError(null);
       try {
         const res = await fetch(
-          `https://api.themoviedb.org/3/movie/popular?api_key=5a3fb7b720c82415c7f2b45ea698f71c&language=pt-BR&page=${page}`
+          `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=pt-BR&page=${page}`
         );
         if (!res.ok) throw new Error("Falha ao buscar filmes. Tente novamente mais tarde.");
         const data = await res.json();
@@ -75,7 +75,6 @@ export default function FilmesListPage() {
             {movies.map((movie) => (
               <Card
                 key={movie.id}
-                isPressable
                 className="group bg-white/5 border border-white/10 rounded-lg hover:scale-[1.03] transition-transform"
               >
                 <Link href={`/filmes/${movie.id}`} className="block">
@@ -115,7 +114,7 @@ export default function FilmesListPage() {
             <Card
               isPressable
               className="w-14 h-8 flex items-center justify-center cursor-pointer bg-white text-black text-xs font-semibold rounded"
-              onClick={() => setPage(1)}
+              onPress={() => setPage(1)}
             >
               1ª
             </Card>
@@ -130,7 +129,7 @@ export default function FilmesListPage() {
                   ? "bg-white text-black font-bold border-black"
                   : "bg-black text-white border-white"
               }`}
-              onClick={() => setPage(p)}
+              onPress={() => setPage(p)}
             >
               {p}
             </Card>
@@ -139,7 +138,7 @@ export default function FilmesListPage() {
             <Card
               isPressable
               className="w-14 h-8 flex items-center justify-center cursor-pointer bg-white text-black text-xs font-semibold rounded"
-              onClick={() => setPage(totalPages)}
+              onPress={() => setPage(totalPages)}
             >
               Últ.
             </Card>

@@ -1,5 +1,5 @@
-import { Chip, Divider } from "@nextui-org/react";
 import type { Metadata } from "next";
+import { Chip, Divider } from "@nextui-org/react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -26,9 +26,10 @@ async function getMovie(id: string): Promise<Movie> {
   return res.json();
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
   try {
-    const movie = await getMovie(params.id);
+    const movie = await getMovie(id);
     return {
       title: `${movie.title} | Cineverse Catalog`,
       description: movie.overview.substring(0, 160),
@@ -42,13 +43,12 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 }
 
 interface Props {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function MovieDetailPage({ params }: Props) {
-  const movie = await getMovie(params.id);
+  const { id } = await params;
+  const movie = await getMovie(id);
   const releaseYear = movie.release_date ? new Date(movie.release_date).getFullYear() : "N/A";
 
   return (
