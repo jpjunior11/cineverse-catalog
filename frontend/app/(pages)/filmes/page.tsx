@@ -41,8 +41,7 @@ export default function FilmesListPage() {
     fetchMovies();
   }, [page]);
 
-  if (error)
-    return <p className="text-danger text-center mt-10">{error}</p>;
+  if (error) return <p className="text-danger text-center mt-10">{error}</p>;
 
   const getPageCards = () => {
     let start = page <= totalPages - 4 ? page : totalPages - 4;
