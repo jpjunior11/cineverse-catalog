@@ -25,7 +25,7 @@ export default function FilmesListPage() {
       setError(null);
       try {
         const res = await fetch(
-          `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=pt-BR&page=${page}`
+          `https://api.themoviedb.org/3/movie/popular?api_key=5a3fb7b720c82415c7f2b45ea698f71c&language=pt-BR&page=${page}`
         );
         if (!res.ok) throw new Error("Falha ao buscar filmes. Tente novamente mais tarde.");
         const data = await res.json();
