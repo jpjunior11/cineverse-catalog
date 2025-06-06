@@ -30,7 +30,7 @@ async function getMovie(id: string): Promise<Movie> {
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const id = (await params).id;
+  const id = params.id;
   try {
     const movie = await getMovie(id);
     return {
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 }
 
 export default async function MovieDetailPage({ params }: PageProps) {
-  const id = (await params).id;
+  const id = params.id;
   const movie = await getMovie(id);
 
   const releaseYear = movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A';
