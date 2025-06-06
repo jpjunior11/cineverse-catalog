@@ -54,5 +54,5 @@ O projeto aplica práticas modernas como **Server Components**, UI responsiva co
     Acesse [http://localhost:3000](http://localhost:3000) para ver a aplicação em execução.
 
 ## Links
-- **Deploy na Vercel:** [https://cineverse-catalog-6cpo4ewgl-jpjunior11s-projects.vercel.app](https://cineverse-catalog-6cpo4ewgl-jpjunior11s-projects.vercel.app)
+- **Deploy na Vercel:** [https://cineverse-catalog.vercel.app](https://cineverse-catalog.vercel.app)
 - **Repositório GitHub:** [https://github.com/jpjunior11/cineverse-catalog](https://github.com/jpjunior11/cineverse-catalog)
