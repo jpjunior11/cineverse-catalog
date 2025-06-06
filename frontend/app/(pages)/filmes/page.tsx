@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Link as NextUILink, Card, CardBody, CardFooter, Image, Button } from "@nextui-org/react";
+import { Card, CardBody, CardFooter, Button } from "@nextui-org/react";
+import Link from "next/link";
+import Image from "next/image";
 
 interface Movie {
   id: number;
@@ -75,35 +77,35 @@ export default function FilmesListPage() {
               <Card
                 key={movie.id}
                 isPressable
-                as={NextUILink}
-                href={`/filmes/${movie.id}`}
                 className="group bg-white/5 border border-white/10 rounded-lg hover:scale-[1.03] transition-transform"
               >
-                <CardBody className="p-0 overflow-hidden rounded-t-lg">
-                  <Image
-                    alt={`Capa do filme ${movie.title}`}
-                    src={
-                      movie.poster_path
-                        ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
-                        : "/no-image-available.png"
-                    }
-                    width={300}
-                    height={450}
-                    className="object-cover w-full h-auto"
-                    loading="lazy"
-                  />
-                </CardBody>
-                <CardFooter className="flex flex-col items-center justify-start pt-3 px-2 min-h-[100px]">
-                  <h4 className="text-base font-semibold text-white text-center">{movie.title}</h4>
-                  <Button
-                    size="sm"
-                    color="default"
-                    variant="bordered"
-                    className="mt-2 text-white border-white"
-                  >
-                    Ver Detalhes
-                  </Button>
-                </CardFooter>
+                <Link href={`/filmes/${movie.id}`} className="block">
+                  <CardBody className="p-0 overflow-hidden rounded-t-lg">
+                    <Image
+                      alt={`Capa do filme ${movie.title}`}
+                      src={
+                        movie.poster_path
+                          ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+                          : "/no-image-available.png"
+                      }
+                      width={300}
+                      height={450}
+                      className="object-cover w-full h-auto"
+                      loading="lazy"
+                    />
+                  </CardBody>
+                  <CardFooter className="flex flex-col items-center justify-start pt-3 px-2 min-h-[100px]">
+                    <h4 className="text-base font-semibold text-white text-center">{movie.title}</h4>
+                    <Button
+                      size="sm"
+                      color="default"
+                      variant="bordered"
+                      className="mt-2 text-white border-white"
+                    >
+                      Ver Detalhes
+                    </Button>
+                  </CardFooter>
+                </Link>
               </Card>
             ))}
           </div>
