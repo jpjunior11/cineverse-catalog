@@ -1,8 +1,7 @@
-import { Chip, Button, Divider } from "@nextui-org/react";
+import { Chip, Divider } from "@nextui-org/react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-
 
 interface Movie {
   id: number;
