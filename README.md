@@ -1,25 +1,26 @@
 # Projeto: Cineverse Catalog com Next.js + NextUI
 
 ## Descrição
-O Cineverse Catalog é uma aplicação web desenvolvida como parte de uma atividade prática, utilizando Next.js (com App Router) e TypeScript. O projeto simula um catálogo de filmes, onde os usuários podem visualizar uma listagem de "filmes" (obtidos da API pública JSONPlaceholder), acessar uma página de detalhes para cada filme e interagir com uma página de login simulada.
+O **Cineverse Catalog** é uma aplicação web que simula um catálogo de filmes, desenvolvida com **Next.js (App Router)** e **TypeScript**. Os dados são obtidos em tempo real da **API do The Movie Database (TMDB)**, exibindo informações reais de filmes, como pôster, sinopse, avaliação, gêneros e mais.
 
-A aplicação demonstra conceitos modernos de desenvolvimento frontend, incluindo Server Components para consumo de API, estilização responsiva com Tailwind CSS e a biblioteca de componentes NextUI, além de seguir as melhores práticas de estrutura de projetos Next.js.
+O projeto aplica práticas modernas como **Server Components**, UI responsiva com **Tailwind CSS**, componentes elegantes do **NextUI**, gerenciamento de erros, carregamento assíncrono e metadados dinâmicos para SEO.
 
 ## Tecnologias Utilizadas
 - **Next.js 15+** (App Router)
 - **TypeScript**
 - **Tailwind CSS**
 - **NextUI**
-- **JSONPlaceholder API** (para dados de filmes mockados)
-- **Vercel** (para deploy)
+- **The Movie Database API (TMDB)**
+- **Vercel** (Deploy)
 
-## Funcionalidades Principais
-- Página de Login simulada (rota raiz `/`).
-- Listagem de Filmes (rota `/filmes`) com dados consumidos de uma API pública.
-- Página de Detalhes de Filme dinâmica (rota `/filmes/[id]`).
-- Layout persistente com navegação responsiva (incluindo menu mobile).
-- Indicadores de carregamento (`loading.tsx`) e tratamento de erros (`error.tsx`).
-- Geração de metadados para SEO.
+## Funcionalidades
+- Página de login fictícia (`/`)
+- Listagem de filmes com dados reais (`/filmes`)
+- Página de detalhes para cada filme (`/filmes/[id]`)
+- Exibição de banners e pôsteres reais com fallback
+- Componentes com carregamento (`loading.tsx`) e tratamento de erro (`error.tsx`)
+- Botão de voltar sempre visível e legível, mesmo com fundos escuros
+- SEO dinâmico via `generateMetadata`
 
 ## Como Rodar o Projeto Localmente
 

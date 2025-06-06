@@ -1,102 +1,68 @@
-// app/(pages)/page.tsx
 'use client';
 
-import { Input, Button, Card, CardHeader, CardBody } from "@nextui-org/react";
-import { useState, useEffect } from "react";
-import { useRouter, usePathname } from 'next/navigation';
+import { Button, Card, CardHeader, CardBody } from "@nextui-org/react";
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 
-
-export default function LoginPageAsRoot() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState('');
+export default function LoginPage() {
   const router = useRouter();
-  const pathname = usePathname();
 
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const isLoggedIn = sessionStorage.getItem('simulatedLogin');
-      if (isLoggedIn && pathname === '/') {
-        router.replace('/filmes');
-      }
-    }
-  }, [router, pathname]);
-
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setMessage('');
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    if (email === "admin@gmail.com" && password === "admin12-") {
-      setMessage("Login simulado com sucesso! Redirecionando para filmes...");
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('simulatedLogin', 'true');
-      }
-      setTimeout(() => {
-        router.push('/filmes');
-      }, 1500);
-    } else {
-      setMessage("Email ou senha inválidos (simulação).");
-      setIsLoading(false);
-      if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('simulatedLogin');
-      }
-    }
+  const handleEnter = () => {
+    router.push('/filmes');
   };
 
   return (
     <>
-      <title>Login | Cineverse Catalog</title>
-
-      <div className="flex justify-center items-center min-h-[calc(100vh-250px)]">
-        <Card className="w-full max-w-md p-6">
-          <CardHeader className="flex flex-col items-center">
-            <h1 className="text-3xl font-bold">Login</h1>
-            <p className="text-sm text-gray-400">Acesse sua conta Cineverse</p>
-          </CardHeader>
-          <CardBody>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <Input
-                isRequired
-                type="email"
-                label="Email"
-                placeholder="seuemail@exemplo.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                variant="bordered"
-                fullWidth
-                isDisabled={isLoading && message.includes("sucesso")}
-              />
-              <Input
-                isRequired
-                type="password"
-                label="Senha"
-                placeholder="Sua senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                variant="bordered"
-                fullWidth
-                isDisabled={isLoading && message.includes("sucesso")}
-              />
-              <Button
-                type="submit"
-                color="primary"
-                isLoading={isLoading}
-                fullWidth
-                size="lg"
-                isDisabled={isLoading && message.includes("sucesso")}
+      <title>Cineverse Catalog</title>
+      <div className="flex flex-col justify-between min-h-screen bg-black text-white">
+        <motion.div
+          className="flex justify-center items-center flex-grow"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <Card className="w-full max-w-md p-6 bg-white/10 border border-white/10 backdrop-blur-md shadow-xl text-white">
+            <CardHeader className="flex flex-col items-center">
+              <motion.h1
+                className="text-4xl font-bold uppercase tracking-wide text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
               >
-                {isLoading ? (message.includes("sucesso") ? "Redirecionando..." : "Entrando...") : "Entrar"}
-              </Button>
-              {message && <p className={`mt-4 text-center text-sm ${message.includes("sucesso") ? "text-green-500" : "text-red-500"}`}>{message}</p>}
-            </form>
-          </CardBody>
-        </Card>
+                Bem-vindo ao Cineverse!
+              </motion.h1>
+              <motion.p
+                className="text-sm text-gray-300 mt-2 text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                Explore o catálogo de filmes populares.
+              </motion.p>
+            </CardHeader>
+            <CardBody className="flex justify-center">
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="w-full"
+              >
+                <Button
+                  onClick={handleEnter}
+                  className="bg-white text-black font-bold uppercase mt-4"
+                  fullWidth
+                  size="lg"
+                >
+                  Explorar Filmes
+                </Button>
+              </motion.div>
+            </CardBody>
+          </Card>
+        </motion.div>
+
+        <footer className="w-full text-center py-6 border-t border-white/10 text-white text-sm">
+          © {new Date().getFullYear()} Cineverse Catalog. Todos os direitos reservados.
+        </footer>
       </div>
     </>
   );

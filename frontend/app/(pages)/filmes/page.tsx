@@ -1,78 +1,150 @@
-// frontend/app/(pages)/filmes/page.tsx
-import { Link as NextUILink, Card, CardHeader, CardBody, CardFooter, Image, Button, Chip } from "@nextui-org/react";
-import type { Metadata } from 'next';
+'use client';
 
-interface MoviePost {
-  userId: number;
+import { useEffect, useState } from "react";
+import { Link as NextUILink, Card, CardBody, CardFooter, Image, Button } from "@nextui-org/react";
+
+interface Movie {
   id: number;
   title: string;
-  body: string;
+  overview: string;
+  poster_path: string | null;
 }
 
-async function getMovies(): Promise<MoviePost[]> {
-  const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=12', {
-    next: { revalidate: 3600 }
-  });
-  if (!res.ok) {
-    throw new Error('Falha ao buscar os filmes da API');
-  }
-  return res.json();
-}
+export default function FilmesListPage() {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
-export const metadata: Metadata = {
-  title: 'Catálogo | Cineverse Catalog',
-  description: 'Descubra os filmes e séries mais recentes e populares em nosso catálogo.',
-};
+  useEffect(() => {
+    const fetchMovies = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/movie/popular?api_key=5a3fb7b720c82415c7f2b45ea698f71c&language=pt-BR&page=${page}`
+        );
+        if (!res.ok) throw new Error("Falha ao buscar filmes. Tente novamente mais tarde.");
+        const data = await res.json();
+        setMovies(data.results);
+        setTotalPages(data.total_pages > 500 ? 500 : data.total_pages);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    fetchMovies();
+  }, [page]);
 
-export default async function FilmesListPage() {
-  const movies = await getMovies();
+  if (error)
+    return <p className="text-danger text-center mt-10">{error}</p>;
+
+  const getPageCards = () => {
+    let start = page <= totalPages - 4 ? page : totalPages - 4;
+    if (start < 1) start = 1;
+    return Array.from({ length: 5 }, (_, i) => start + i);
+  };
+
+  const pageCards = getPageCards();
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-4xl sm:text-5xl font-bold mb-8 text-center tracking-tight">
-        Nosso Catálogo
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
-        {movies.map((movie) => (
-          <Card 
-            shadow="md"
-            key={movie.id} 
-            isPressable 
-            as={NextUILink}
-            href={`/filmes/${movie.id}`}
-            className="hover:scale-105 transition-transform duration-200 ease-in-out group"
-          >
-            <CardHeader className="flex-col items-start px-4 pt-3 pb-1">
-              <Chip size="sm" color="secondary" variant="flat" className="mb-1 self-start">FILME</Chip>
-              <h4 className="font-bold text-lg leading-tight truncate group-hover:text-primary transition-colors">
-                {movie.title}
-              </h4>
-              <small className="text-xs text-foreground-500">User ID: {movie.userId}</small>
-            </CardHeader>
-            <CardBody className="overflow-visible p-0 relative">
-              <Image
-                alt={`Capa do filme ${movie.title}`}
-                className="object-cover rounded-none w-full h-[200px] sm:h-[250px]"
-                src={`https://picsum.photos/seed/${movie.id}/400/300`}
-              />
-            </CardBody>
-            <CardFooter className="flex-col items-start p-4 space-y-2">
-              <p className="text-sm text-foreground-600 line-clamp-3">
-                {movie.body}
-              </p>
-              
-              <Button 
-                color="primary" 
-                size="sm" 
-                variant="flat" 
-                className="pointer-events-none mt-auto"
+    <div className="flex flex-col min-h-screen bg-black text-white px-4 sm:px-8">
+      <header className="py-8 text-center">
+        <h1 className="text-3xl font-extrabold uppercase tracking-wide">Cineverse Catalog</h1>
+      </header>
+
+      <main className="flex-grow space-y-8">
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 12 }).map((_, index) => (
+              <Card key={index} className="space-y-5 p-4 bg-white/10 rounded-lg">
+                <div className="h-40 rounded-lg bg-white/20 animate-pulse"></div>
+                <div className="space-y-3">
+                  <div className="h-3 w-4/5 rounded-lg bg-white/30 animate-pulse"></div>
+                  <div className="h-3 w-2/5 rounded-lg bg-white/30 animate-pulse"></div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {movies.map((movie) => (
+              <Card
+                key={movie.id}
+                isPressable
+                as={NextUILink}
+                href={`/filmes/${movie.id}`}
+                className="group bg-white/5 border border-white/10 rounded-lg hover:scale-[1.03] transition-transform"
               >
-                Ver Detalhes
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+                <CardBody className="p-0 overflow-hidden rounded-t-lg">
+                  <Image
+                    alt={`Capa do filme ${movie.title}`}
+                    src={
+                      movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+                        : "/no-image-available.png"
+                    }
+                    width={300}
+                    height={450}
+                    className="object-cover w-full h-auto"
+                    loading="lazy"
+                  />
+                </CardBody>
+                <CardFooter className="flex flex-col items-center justify-start pt-3 px-2 min-h-[100px]">
+                  <h4 className="text-base font-semibold text-white text-center">{movie.title}</h4>
+                  <Button
+                    size="sm"
+                    color="default"
+                    variant="bordered"
+                    className="mt-2 text-white border-white"
+                  >
+                    Ver Detalhes
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        <div className="flex flex-wrap justify-center gap-2 py-8 select-none">
+          {page > 1 && (
+            <Card
+              isPressable
+              className="w-14 h-8 flex items-center justify-center cursor-pointer bg-white text-black text-xs font-semibold rounded"
+              onClick={() => setPage(1)}
+            >
+              1ª
+            </Card>
+          )}
+
+          {pageCards.map((p) => (
+            <Card
+              key={p}
+              isPressable
+              className={`w-8 h-8 flex items-center justify-center cursor-pointer rounded text-xs border ${
+                page === p
+                  ? "bg-white text-black font-bold border-black"
+                  : "bg-black text-white border-white"
+              }`}
+              onClick={() => setPage(p)}
+            >
+              {p}
+            </Card>
+          ))}
+          {page < totalPages && (
+            <Card
+              isPressable
+              className="w-14 h-8 flex items-center justify-center cursor-pointer bg-white text-black text-xs font-semibold rounded"
+              onClick={() => setPage(totalPages)}
+            >
+              Últ.
+            </Card>
+          )}
+        </div>
+      </main>
     </div>
   );
 }

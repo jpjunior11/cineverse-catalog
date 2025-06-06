@@ -1,4 +1,3 @@
-// app/providers.tsx
 'use client';
 
 import { NextUIProvider } from '@nextui-org/react';
@@ -8,7 +7,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   return (
-    <NextUIProvider navigate={router.push}>
+    <NextUIProvider
+      navigate={(to) => router.push(to)}
+    >
       {children}
     </NextUIProvider>
   );

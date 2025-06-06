@@ -1,4 +1,3 @@
-// frontend/app/layout.tsx
 'use client';
 
 import { Inter } from 'next/font/google';
@@ -9,135 +8,58 @@ import {
   NavbarMenuToggle, NavbarMenu, NavbarMenuItem
 } from "@nextui-org/react";
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+
+const LogoutIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+  </svg>
+);
 
 const inter = Inter({ subsets: ['latin'] });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isClientMounted, setIsClientMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    setIsClientMounted(true);
-    setIsLoggedIn(!!sessionStorage.getItem('simulatedLogin'));
-  }, []);
-
-  const handleLogout = () => {
-    if (typeof window !== 'undefined') {
-      sessionStorage.removeItem('simulatedLogin');
-      setIsLoggedIn(false);
-      window.location.href = '/'; 
-    }
-  };
-  
   const isLoginPage = pathname === '/';
 
   const menuItems = [
-    { label: "Catálogo", href: "/filmes", show: (isClientMounted && isLoggedIn) },
+    { label: "Catálogo", href: "/filmes" }
   ];
 
+  const handleLogout = () => {
+    window.location.href = '/';
+  };
+
   return (
-    <html lang="pt-BR" className='dark'>
+    <html lang="pt-BR" className="dark">
       <head>
         <title>Cineverse Catalog</title>
         <meta name="description" content="Explore um universo de filmes e séries." />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body className={`${inter.className} flex flex-col min-h-screen bg-background text-foreground`}>
+      <body className={`${inter.className} bg-background text-foreground`}>
         <Providers>
-          <Navbar onMenuOpenChange={setIsMenuOpen} isBordered isMenuOpen={isMenuOpen}>
-            <NavbarContent>
-              <NavbarMenuToggle
-                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                className="sm:hidden"
-              />
-              <NavbarBrand>
-                <NextUILink href={(isClientMounted && isLoggedIn) ? "/filmes" : "/"} className="font-bold text-inherit text-2xl">
-                  Cineverse
-                </NextUILink>
-              </NavbarBrand>
-            </NavbarContent>
+          <div className="relative flex flex-col min-h-screen">
+            <motion.main
+              key={pathname}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="flex-grow"
+            >
+              {children}
+            </motion.main>
 
-            <NavbarContent className="hidden sm:flex gap-4" justify="center">
-              {(isClientMounted && isLoggedIn) && (
-                <NavbarItem isActive={pathname === "/filmes"}>
-                  <NextUILink 
-                    color={pathname === "/filmes" ? "primary" : "foreground"} 
-                    href="/filmes" 
-                    aria-current={pathname === "/filmes" ? "page" : undefined}
-                  >
-                    Catálogo
-                  </NextUILink>
-                </NavbarItem>
-              )}
-            </NavbarContent>
-
-            <NavbarContent justify="end">
-              {(isClientMounted && !isLoginPage && !isLoggedIn) && (
-                <NavbarItem>
-                  <Button as={NextUILink} color="primary" href="/" variant="flat">
-                    Login
-                  </Button>
-                </NavbarItem>
-              )}
-              {(isClientMounted && isLoggedIn) && (
-                 <NavbarItem>
-                  <Button onClick={handleLogout} color="danger" variant="flat">
-                    Logout
-                  </Button>
-                </NavbarItem>
-              )}
-            </NavbarContent>
-
-            <NavbarMenu>
-              {menuItems.map((item, index) => (
-                item.show && (
-                  <NavbarMenuItem key={`${item.label}-${index}`} isActive={pathname === item.href}>
-                    <NextUILink
-                      color={pathname === item.href ? "primary" : "foreground"}
-                      className="w-full"
-                      href={item.href}
-                      size="lg"
-                      aria-current={pathname === item.href ? "page" : undefined}
-                      onPress={() => setIsMenuOpen(false)}
-                    >
-                      {item.label}
-                    </NextUILink>
-                  </NavbarMenuItem>
-                )
-              ))}
-              {(isClientMounted && !isLoggedIn) && (
-                <NavbarMenuItem>
-                   <Button 
-                      as={NextUILink} 
-                      color="primary" 
-                      href="/" 
-                      variant="ghost" 
-                      className="w-full" 
-                      onPress={() => setIsMenuOpen(false)}
-                    >
-                    Login
-                  </Button>
-                </NavbarMenuItem>
-              )}
-            </NavbarMenu>
-          </Navbar>
-
-          <main className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex-grow py-8">
-            {children}
-          </main>
-
-          <footer className="w-full flex items-center justify-center py-6 border-t border-divider">
-            <p className="text-sm text-foreground-500">
-              © {new Date().getFullYear()} Cineverse Catalog. Todos os direitos reservados.
-            </p>
-          </footer>
+            {!isLoginPage && (
+              <footer className="w-full flex items-center justify-center py-6 border-t border-divider">
+                <p className="text-sm text-foreground-500">
+                  © {new Date().getFullYear()} Cineverse Catalog. Todos os direitos reservados.
+                </p>
+              </footer>
+            )}
+          </div>
         </Providers>
       </body>
     </html>

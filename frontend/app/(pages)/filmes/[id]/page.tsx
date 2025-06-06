@@ -1,26 +1,26 @@
-// frontend\app\(pages)\filmes\[id]\page.tsx
-import { Card, Chip, Button, Divider } from "@nextui-org/react";
+import { Chip, Button, Divider } from "@nextui-org/react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import ImageWithFallback from "./ImageWithFallback";
+import Image from "next/image";
 
-interface MoviePost {
-  userId: number;
+
+interface Movie {
   id: number;
   title: string;
-  body: string;
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  release_date: string;
+  vote_average: number;
+  genres: { id: number; name: string }[];
 }
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
-interface GenerateMetadataProps {
-  params: Promise<{ id: string }>;
-}
-
-async function getMovie(id: string): Promise<MoviePost> {
-  const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+async function getMovie(id: string): Promise<Movie> {
+  const res = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=5a3fb7b720c82415c7f2b45ea698f71c&language=pt-BR`, {
     next: { revalidate: 3600 },
   });
   if (!res.ok) {
@@ -30,15 +30,13 @@ async function getMovie(id: string): Promise<MoviePost> {
   return res.json();
 }
 
-export async function generateMetadata(
-  { params }: GenerateMetadataProps,
-): Promise<Metadata> {
-  const { id } = await params;
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const id = (await params).id;
   try {
     const movie = await getMovie(id);
     return {
-      title: movie.title,
-      description: movie.body.substring(0, 160),
+      title: `${movie.title} | Cineverse Catalog`,
+      description: movie.overview.substring(0, 160),
     };
   } catch {
     return {
@@ -49,65 +47,102 @@ export async function generateMetadata(
 }
 
 export default async function MovieDetailPage({ params }: PageProps) {
-  const { id } = await params;
+  const id = (await params).id;
   const movie = await getMovie(id);
 
+  const releaseYear = movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A';
+
   return (
-    <>
-      <title>Cineverse Catalog</title>
+    <div className="relative w-full">
+      <div className="relative h-[60vh] md:h-[70vh] w-full">
+        {movie.backdrop_path ? (
+          <Image
+            src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+            alt={`Cena do filme ${movie.title}`}
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center top' }}
+            priority
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gray-800" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent z-10" />
 
-      <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
-        <Button
-          as={Link}
-          href="/filmes"
-          color="primary"
-          variant="ghost"
-          startContent={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5"
+        <div className="absolute top-4 left-4 z-30 bg-black bg-opacity-60 rounded-md px-3 py-1.5 shadow-lg flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-5 h-5"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+          <Link href="/filmes" className="text-white font-medium select-none">
+            Voltar ao Catálogo
+          </Link>
+        </div>
+
+      </div>
+
+      <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-32 md:-mt-52 pb-12 md:pb-20">
+        <div className="md:flex md:items-end md:gap-8">
+          <div className="flex-shrink-0 w-1/2 sm:w-1/3 md:w-[240px] mx-auto md:mx-0">
+            <Image
+              src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '/no-image-available.png'}
+              alt={`Capa do filme ${movie.title}`}
+              width={500}
+              height={750}
+              className="rounded-lg shadow-2xl"
+            />
+          </div>
+
+          <div className="mt-6 md:mt-0 text-center md:text-left space-y-3 max-w-full">
+            <h1
+              className="text-3xl lg:text-5xl font-bold tracking-tight text-white break-words max-w-full"
+              style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-          }
-          className="self-start"
-        >
-          Voltar ao Catálogo
-        </Button>
-
-        <Card shadow="lg" className="overflow-hidden">
-          <div className="md:flex">
-            <div className="md:w-1/3 lg:w-2/5 xl:w-1/3">
-              <ImageWithFallback
-                src={`https://picsum.photos/seed/${movie.id}/600/800`}
-                alt={`Capa do filme ${movie.title}`}
-              />
+              {movie.title}
+            </h1>
+            <div className="flex items-center justify-center md:justify-start gap-4 text-foreground-400 font-medium flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-5 h-5 text-yellow-400"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span>{movie.vote_average.toFixed(1)} / 10</span>
+              </div>
+              <span>{releaseYear}</span>
             </div>
-            <div className="p-6 md:p-8 flex-1 space-y-4">
-              <div className="space-y-2">
-                <Chip color="secondary" variant="bordered" size="sm">
-                  Filme ID: {movie.id}
+            <div className="flex gap-2 justify-center md:justify-start flex-wrap">
+              {movie.genres.map((genre) => (
+                <Chip key={genre.id} color="secondary" variant="flat">
+                  {genre.name}
                 </Chip>
-                <h1 className="text-3xl lg:text-4xl font-bold leading-tight text-foreground">{movie.title}</h1>
-                <div className="text-md text-foreground-500">
-                  Postado pelo Usuário ID: <Chip size="sm" variant="flat">{movie.userId}</Chip>
-                </div>
-              </div>
-              <Divider className="my-4" />
-              <div>
-                <h2 className="text-2xl font-semibold text-foreground-800 mb-3">Sinopse / Conteúdo</h2>
-                <article className="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-foreground-600 leading-relaxed">
-                  <p>{movie.body}</p>
-                </article>
-              </div>
+              ))}
             </div>
           </div>
-        </Card>
+        </div>
+
+        <div className="mt-8 space-y-8">
+          <div>
+            <h2 className="text-2xl font-semibold mb-3">Sinopse</h2>
+            <p className="text-foreground-400 leading-relaxed">
+              {movie.overview || "Sinopse não disponível em português."}
+            </p>
+          </div>
+          <Divider className="my-6" />
+        </div>
       </div>
-    </>
+    </div>
   );
 }
